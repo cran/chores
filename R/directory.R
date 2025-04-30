@@ -11,8 +11,6 @@
 #'   the option `.chores_dir`).
 #' * `directory_list()` enumerates all of the different prompts that currently
 #'   live in the directory (and provides clickable links to each).
-#' * `directory_load()` registers each of the prompts in the prompt
-#'   directory with the chores package.
 #'
 #' [Functions prefixed with][prompt] `prompt*()` allow users to conveniently create, edit,
 #' and delete the prompts in chores' prompt directory.
@@ -82,10 +80,6 @@
 #' # view updated list of prompts
 #' directory_list()
 #'
-#' # register the prompt with the package
-#' # (this will also happen automatically on reload)
-#' directory_load()
-#'
 #' @export
 directory_load <- function(dir = directory_path()) {
   prompt_base_names <- directory_base_names(dir)
@@ -128,7 +122,9 @@ directory_list <- function() {
     cli::cli_bullets(
       set_names(
         paste0(
-          "{.file ", prompt_paths, "}"
+          "{.file ",
+          prompt_paths,
+          "}"
         ),
         "*"
       )
@@ -141,17 +137,7 @@ directory_list <- function() {
 #' @rdname directory
 #' @export
 directory_path <- function() {
-  .chores_dir <- getOption(".chores_dir", default = NULL)
-
-  if (is.null(.chores_dir)) {
-    cli::cli_warn(c(
-      "No {.pkg chores} prompt directory configured.",
-      'Set one in your {.file .Rprofile} using e.g.
-       {.code directory_set(file.path("~", ".config", "chores"))}.'
-    ))
-  }
-
-  .chores_dir
+  getOption(".chores_dir", default = file.path("~", ".config", "chores"))
 }
 
 #' @rdname directory
