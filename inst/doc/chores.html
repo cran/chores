@@ -48,8 +48,9 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -60,7 +61,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -357,7 +358,7 @@ the model how to convert to snapshot tests, disentangle nested
 expectations, and transition from deprecated functions. It replaces the
 selected code.</li>
 <li>The <code>&quot;roxygen&quot;</code> helper helps you quickly template out
-royxgen documentation for a function. Its prompt shows the model how to
+roxygen documentation for a function. Its prompt shows the model how to
 write high-quality stub <code>@param</code> and <code>@returns</code>
 entries that can be later extended by the developer. It prefixes the
 selected code.</li>
@@ -369,10 +370,10 @@ for use with chores, you’ll want to the use the most performant model
 possible that satisfies your privacy needs; chores automatically passes
 along your selected code to your chosen model, so it’s especially
 important to consider data privacy when using LLMs with chores.</p>
-<p>chores uses the <code>.chores_chat</code> option to configure which
-model powers the addin. <code>.chores_chat</code> should be set to an
+<p>chores uses the <code>chores.chat</code> option to configure which
+model powers the addin. <code>chores.chat</code> should be set to an
 ellmer Chat object. For example, to use Anthropic’s Claude, you might
-write <code>options(.chores_chat = ellmer::chat_claude())</code>. Paste
+write <code>options(chores.chat = ellmer::chat_claude())</code>. Paste
 that code in your <code>.Rprofile</code> via
 <code>usethis::edit_r_profile()</code> to always use the same model
 every time you start an R session.</p>
@@ -389,25 +390,34 @@ is a very powerful model for code assistance and is the model I’ve used
 while developing the package. If you want to use Claude, you’ll need to
 register an API key at <code>https://console.anthropic.com/</code> to
 the environment variable <code>ANTHROPIC_API_KEY</code> and then set
-<code>options(.chores_chat = ellmer::chat_claude())</code>.</p></li>
+<code>options(chores.chat = ellmer::chat_claude())</code>.</p></li>
 <li><p>Regarding OpenAI’s models, <code>chat_openai()</code> defaults to
 <strong>GPT-4o</strong>, but you can use
 <code>model = &quot;gpt-4o-mini&quot;</code> for a cheaper, lower-quality model;
 to use an OpenAI model, you’ll need to set the options
-<code>options(.chores_chat = ellmer::chat_openai(model = &quot;gpt-4o&quot;))</code>
+<code>options(chores.chat = ellmer::chat_openai(model = &quot;gpt-4o&quot;))</code>
 and register your OpenAI API key with the <code>OPENAI_API_KEY</code>
 environment variable.</p></li>
-<li><p>You can use a <strong>local model</strong> with
-<code>chat_ollama()</code>, which uses <a href="https://ollama.com">Ollama</a> and allows you to run models on
-your own computer. While the biggest models you can run locally aren’t
-as good as the state of the art hosted models, they don’t share your
-data and are effectively free. To use an ollama model, run the model
-locally and then set
-<code>options(.chores_chat = ellmer::chat_ollama(model = &quot;model-name&quot;))</code>.
-Instead of <code>model-name</code>, you’d substitute in the name of the
-model that appears when you run <code>ollama list</code> at the
-console.</p></li>
+<li><p>You can use a <strong>local model</strong>, which allows you to
+run models on your own computer. Local models don’t share your data and
+are free to use, though they’re slightly less accurate than the state of
+the art hosted models. We recommend <strong>Qwen3 4B Instruct
+2507</strong> for local use with chores; at least with MLX on Mac, it
+takes up 2.5GB of space and requires 2.5GB of RAM to run.</p>
+<p><strong>On Apple Silicon (Mac M-series)</strong>, we recommend <a href="https://lmstudio.ai/">LM Studio</a>. Click “Discover”, search
+“Qwen3 4B Instruct 2507”, and click “Download.” Once downloaded, click
+the “Developer” tab and change the Status from Stopped to Running. Then
+configure chores with:</p></li>
 </ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>qwen3_4b <span class="ot">&lt;-</span> ellmer<span class="sc">::</span><span class="fu">chat_openai_compatible</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="at">base_url =</span> <span class="st">&quot;http://127.0.0.1:1234/v1&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">&quot;qwen/qwen3-4b-2507&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="fu">options</span>(<span class="at">chores.chat =</span> qwen3_4b)</span></code></pre></div>
+<p><strong>On other systems</strong>, use <a href="https://ollama.com">Ollama</a>. Run
+<code>ollama pull qwen3:4b</code> at the terminal, then set
+<code>options(chores.chat = ellmer::chat_ollama(model = &quot;qwen3:4b&quot;))</code>.</p>
 </div>
 <div id="the-chores-addin" class="section level2">
 <h2>The chores addin</h2>
@@ -433,16 +443,16 @@ macOS).</p>
 <p><strong>In Positron</strong>, you’ll need to open the command
 palette, run “Open Keyboard Shortcuts (JSON)”, and paste the following
 into your <code>keybindings.json</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>    <span class="fu">{</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;Ctrl+Cmd+C&quot;</span><span class="fu">,</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;workbench.action.executeCode.console&quot;</span><span class="fu">,</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>        <span class="dt">&quot;when&quot;</span><span class="fu">:</span> <span class="st">&quot;editorTextFocus&quot;</span><span class="fu">,</span></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>        <span class="dt">&quot;args&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>            <span class="dt">&quot;langId&quot;</span><span class="fu">:</span> <span class="st">&quot;r&quot;</span><span class="fu">,</span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>            <span class="dt">&quot;code&quot;</span><span class="fu">:</span> <span class="st">&quot;chores::.init_addin()&quot;</span><span class="fu">,</span></span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>            <span class="dt">&quot;focus&quot;</span><span class="fu">:</span> <span class="kw">true</span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>        <span class="fu">}</span></span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="fu">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;Ctrl+Cmd+C&quot;</span><span class="fu">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;workbench.action.executeCode.console&quot;</span><span class="fu">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>        <span class="dt">&quot;when&quot;</span><span class="fu">:</span> <span class="st">&quot;editorTextFocus&quot;</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>        <span class="dt">&quot;args&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>            <span class="dt">&quot;langId&quot;</span><span class="fu">:</span> <span class="st">&quot;r&quot;</span><span class="fu">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>            <span class="dt">&quot;code&quot;</span><span class="fu">:</span> <span class="st">&quot;chores::.init_addin()&quot;</span><span class="fu">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>            <span class="dt">&quot;focus&quot;</span><span class="fu">:</span> <span class="kw">true</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    <span class="fu">}</span></span></code></pre></div>
 <p>The analogous keybinding on non-macOS is <code>Ctrl+Alt+C</code>.
 That said, change the <code>&quot;key&quot;</code> entry to any keybinding you
 wish!</p>
