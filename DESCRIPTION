@@ -1,6 +1,6 @@
 Package: chores
 Title: A Collection of Large Language Model Assistants
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: c(
     person("Simon", "Couch", , "simon.couch@posit.co", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-5676-5107")),
@@ -26,9 +26,9 @@ Imports: cli (>= 3.6.3), glue (>= 1.8.0), ellmer (>= 0.4.0), miniUI (>=
 Suggests: gt, knitr, rmarkdown, testthat (>= 3.0.0), tibble, withr
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2025-12-09 21:12:27 UTC; simoncouch
+Packaged: 2026-03-04 21:27:05 UTC; simoncouch
 Author: Simon Couch [aut, cre] (ORCID: <https://orcid.org/0000-0001-5676-5107>),
   Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)
 Maintainer: Simon Couch <simon.couch@posit.co>
 Repository: CRAN
-Date/Publication: 2025-12-09 21:30:01 UTC
+Date/Publication: 2026-03-04 22:00:02 UTC

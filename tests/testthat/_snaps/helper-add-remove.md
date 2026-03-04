@@ -1,10 +1,10 @@
 # helper addition and removal works
 
     Code
-      helper_boopery
+      helper_echo
     Message
       
-      -- A boopery chore helper using claude-3-7-sonnet-20250219. 
+      -- A echotest chore helper using claude-haiku-4-5. 
 
 # helper addition with bad inputs
 
